@@ -3,10 +3,6 @@ import sys
 
 def read_words_file():
     """Read words from the Unix words file. Once the with block ends, the connection to the file terminates. NO local copy of the file is created"""
-    words_list = []
-    # split the file on each line and add each word to the words_list
-
-
     with open('/usr/share/dict/words', 'r') as file:
         words_list = file.read().splitlines()
     return words_list
@@ -16,7 +12,6 @@ def create_random_sentence(num_words, words_list):
     if num_words > len(words_list):
         return "Error: Requested more words than available"
     
-
     # select random words
     selected_words = random.sample(words_list, num_words)
     
@@ -33,13 +28,11 @@ if __name__ == '__main__':
         sys.exit(1)
     
     try:
-
-    # access the number the user input, stored as string so must be converted to int
+        # access the number the user input, stored as string so must be converted to int
         num_words = int(sys.argv[1])
         if num_words < 1:
             print("Please enter a positive number")
-    # exit the program after prinitng the error
-
+            # exit the program after printing the error
             sys.exit(1)
     except ValueError:
         print("Please enter a valid number")
@@ -49,6 +42,5 @@ if __name__ == '__main__':
     words_list = read_words_file()
     
     # generate and print random sentence
-
     sentence = create_random_sentence(num_words, words_list)
     print(sentence)
