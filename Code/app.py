@@ -1,18 +1,31 @@
 """Main script, uses other modules to generate sentences."""
 from flask import Flask
+from histogram import histogram
+from listogram import Listogram
+from dictogram import Dictogram
 import random
 
 app = Flask(__name__)
 
+# TODO: Initialize your histogram, hash table, or markov chain here.
+# Any code placed here will run only once, when the server starts.
 
-# Example word list (replace this with a more advanced model)
-word_list = ["hello", "world", "flask", "python", "sentence", "generate", "random"]
+hist = histogram("data/corpus.txt")
 
 @app.route("/")
 def home():
-    """Return a randomly selected word from the list."""
-    random_word = random.choice(word_list)
-    return f"<p>{random_word}</p>"
+    """Route that returns a web page containing the generated text."""
+    words = list(hist.keys()) # get unique word from the hist
+    num_words_to_generate = 5
+
+    random_words = []
+    if words:
+        for _ in range(num_words_to_generate):
+            random_index = random.randint(0, len(words) - 1)  # Generate random index
+            random_word = words[random_index]  # Pick word
+            random_words.append(random_word)  # Add to the list of random words
+
+    return " " + " ".join(random_words)  # Return the words separated by spaces
 
 if __name__ == "__main__":
     """To run the Flask server, execute `python app.py` in your terminal.

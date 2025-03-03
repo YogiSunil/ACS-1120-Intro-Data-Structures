@@ -1,105 +1,107 @@
 #!python
 
-from dictogram import Dictogram
+from hashtable import HashTable
 import unittest
 # Python 2 and 3 compatibility: unittest module renamed this assertion method
 if not hasattr(unittest.TestCase, 'assertCountEqual'):
     unittest.TestCase.assertCountEqual = unittest.TestCase.assertItemsEqual
 
 
-class DictogramTest(unittest.TestCase):
+class HashTableTest(unittest.TestCase):
 
-    # Test fixtures: known inputs and their expected results
-    fish_words = ['one', 'fish', 'two', 'fish', 'red', 'fish', 'blue', 'fish']
-    fish_list = [('one', 1), ('fish', 4), ('two', 1), ('red', 1), ('blue', 1)]
-    fish_dict = {'one': 1, 'fish': 4, 'two': 1, 'red': 1, 'blue': 1}
+    def test_init(self):
+        ht = HashTable(4)
+        assert len(ht.buckets) == 4
+        assert ht.length() == 0
 
-    def test_entries(self):
-        dictogram = Dictogram(self.fish_words)
-        # Verify histogram as dictionary of entries like {word: count}
-        assert len(dictogram) == 5
-        self.assertCountEqual(dictogram, self.fish_dict)  # Ignore item order
-        # Verify histogram as list of entries like [(word, count)]
-        listogram = dictogram.items()
-        assert len(listogram) == 5
-        self.assertCountEqual(listogram, self.fish_list)  # Ignore item order
+    def test_keys(self):
+        ht = HashTable()
+        assert ht.keys() == []
+        ht.set('I', 1)
+        assert ht.keys() == ['I']
+        ht.set('V', 5)
+        self.assertCountEqual(ht.keys(), ['I', 'V'])  # Ignore item order
+        ht.set('X', 10)
+        self.assertCountEqual(ht.keys(), ['I', 'V', 'X'])  # Ignore item order
+
+    def test_values(self):
+        ht = HashTable()
+        assert ht.values() == []
+        ht.set('I', 1)
+        assert ht.values() == [1]
+        ht.set('V', 5)
+        self.assertCountEqual(ht.values(), [1, 5])  # Ignore item order
+        ht.set('X', 10)
+        self.assertCountEqual(ht.values(), [1, 5, 10])  # Ignore item order
+
+    def test_items(self):
+        ht = HashTable()
+        assert ht.items() == []
+        ht.set('I', 1)
+        assert ht.items() == [('I', 1)]
+        ht.set('V', 5)
+        self.assertCountEqual(ht.items(), [('I', 1), ('V', 5)])
+        ht.set('X', 10)
+        self.assertCountEqual(ht.items(), [('I', 1), ('V', 5), ('X', 10)])
+
+    def test_length(self):
+        ht = HashTable()
+        assert ht.length() == 0
+        ht.set('I', 1)
+        assert ht.length() == 1
+        ht.set('V', 5)
+        assert ht.length() == 2
+        ht.set('X', 10)
+        assert ht.length() == 3
 
     def test_contains(self):
-        histogram = Dictogram(self.fish_words)
-        # All of these words should be found
-        for word in self.fish_words:
-            assert word in histogram
-        # None of these words should be found
-        for word in ('fishy', 'food'):
-            assert word not in histogram
+        ht = HashTable()
+        ht.set('I', 1)
+        ht.set('V', 5)
+        ht.set('X', 10)
+        assert ht.contains('I') is True
+        assert ht.contains('V') is True
+        assert ht.contains('X') is True
+        assert ht.contains('A') is False
 
-    def test_frequency(self):
-        histogram = Dictogram(self.fish_words)
-        # Verify frequency count of all words
-        assert histogram.frequency('one') == 1
-        assert histogram.frequency('two') == 1
-        assert histogram.frequency('red') == 1
-        assert histogram.frequency('blue') == 1
-        assert histogram.frequency('fish') == 4
-        # Verify frequency count of unseen words
-        assert histogram.frequency('food') == 0
+    def test_set_and_get(self):
+        ht = HashTable()
+        ht.set('I', 1)
+        ht.set('V', 5)
+        ht.set('X', 10)
+        assert ht.get('I') == 1
+        assert ht.get('V') == 5
+        assert ht.get('X') == 10
+        assert ht.length() == 3
+        with self.assertRaises(KeyError):
+            ht.get('A')  # Key does not exist
 
-    def test_add_count(self):
-        histogram = Dictogram(self.fish_words)
-        # Add more words to update frequency counts
-        histogram.add_count('two', 2)
-        histogram.add_count('blue', 3)
-        histogram.add_count('fish', 4)
-        histogram.add_count('food', 5)
-        # Verify updated frequency count of all words
-        assert histogram.frequency('one') == 1
-        assert histogram.frequency('two') == 3
-        assert histogram.frequency('red') == 1
-        assert histogram.frequency('blue') == 4
-        assert histogram.frequency('fish') == 8
-        assert histogram.frequency('food') == 5
-        # Verify count of distinct word types
-        assert histogram.types == 6
-        # Verify total count of all word tokens
-        assert histogram.tokens == 8 + 14
+    def test_set_twice_and_get(self):
+        ht = HashTable()
+        ht.set('I', 1)
+        ht.set('V', 4)
+        ht.set('X', 9)
+        assert ht.length() == 3
+        ht.set('V', 5)  # Update value
+        ht.set('X', 10)  # Update value
+        assert ht.get('I') == 1
+        assert ht.get('V') == 5
+        assert ht.get('X') == 10
+        assert ht.length() == 3  # Check length is not overcounting
 
-    def test_tokens(self):
-        histogram = Dictogram(self.fish_words)
-        # Verify total count of all word tokens
-        assert len(self.fish_words) == 8
-        assert histogram.tokens == 8
-        # Adding words again should double total count of all word tokens
-        for word in self.fish_words:
-            histogram.add_count(word)
-        assert histogram.tokens == 8 * 2
-
-    def test_types(self):
-        histogram = Dictogram(self.fish_words)
-        # Verify count of distinct word types
-        assert len(set(self.fish_words)) == 5
-        assert histogram.types == 5
-        # Adding words again should not change count of distinct word types
-        for word in self.fish_words:
-            histogram.add_count(word)
-        assert histogram.types == 5
-
-    def test_sample(self):
-        histogram = Dictogram(self.fish_words)
-        # Create a list of 10,000 word samples from histogram
-        samples_list = [histogram.sample() for _ in range(10000)]
-        # Create a histogram to count frequency of each word
-        samples_hist = Dictogram(samples_list)
-        # Check each word in original histogram
-        for word, count in histogram.items():
-            # Calculate word's observed frequency
-            observed_freq = count / histogram.tokens
-            # Calculate word's sampled frequency
-            samples = samples_hist.frequency(word)
-            sampled_freq = samples / samples_hist.tokens
-            # Verify word's sampled frequency is close to observed frequency
-            lower_bound = observed_freq * 0.9  # 10% below = 90% = 0.9
-            upper_bound = observed_freq * 1.1  # 10% above = 110% = 1.1
-            assert lower_bound <= sampled_freq <= upper_bound
+    def test_delete(self):
+        ht = HashTable()
+        ht.set('I', 1)
+        ht.set('V', 5)
+        ht.set('X', 10)
+        assert ht.length() == 3
+        ht.delete('I')
+        ht.delete('X')
+        assert ht.length() == 1
+        with self.assertRaises(KeyError):
+            ht.delete('X')  # Key no longer exists
+        with self.assertRaises(KeyError):
+            ht.delete('A')  # Key does not exist
 
 
 if __name__ == '__main__':
