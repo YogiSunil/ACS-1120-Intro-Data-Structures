@@ -1,6 +1,5 @@
 #!python
 
-
 class Node(object):
 
     def __init__(self, data):
@@ -136,8 +135,23 @@ class LinkedList:
         
         raise ValueError('Item not found: {}'.format(item))
 
-# It's failing a test because linkedlist_test.py is looking for a replace method but the 
-# starter code does not mention for us to add this method.
+    def replace(self, matcher, new_item):
+        """Replace the first item that matches the given matcher with new_item.
+        
+        Best case time: O(1)
+        Explanation: The item to replace is the first node.
+        
+        Worst case time: O(n)
+        Explanation: We may need to check every node.
+        """
+        node = self.head
+        while node is not None:
+            if matcher(node.data):
+                node.data = new_item
+                return
+            node = node.next
+        raise ValueError('Item not found to replace')
+
 def test_linked_list():
     ll = LinkedList()
     print('list: {}'.format(ll))
