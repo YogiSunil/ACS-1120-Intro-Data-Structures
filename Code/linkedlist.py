@@ -1,5 +1,3 @@
-#!python
-
 class Node(object):
 
     def __init__(self, data):
@@ -28,7 +26,7 @@ class LinkedList:
         ll_str = ""
         for item in self.items():
             ll_str += f'({item}) -> '
-        return ll_str
+        return ll_str + 'None'  # Ensure the list ends with 'None'
 
     def items(self):
         """Return a list (dynamic array) of all items in this linked list.
@@ -152,31 +150,32 @@ class LinkedList:
             node = node.next
         raise ValueError('Item not found to replace')
 
+
 def test_linked_list():
     ll = LinkedList()
-    print('list: {}'.format(ll))
+    print('Initial list:', ll)
+    
+    # Testing append method
     print('\nTesting append:')
     for item in ['A', 'B', 'C']:
-        print('append({!r})'.format(item))
+        print(f'append({item!r})')
         ll.append(item)
-        print('list: {}'.format(ll))
+        print('List:', ll)
 
-    print('head: {}'.format(ll.head))
-    print('tail: {}'.format(ll.tail))
-    print('length: {}'.format(ll.length()))
+    print('Head:', ll.head)
+    print('Tail:', ll.tail)
+    print('Length:', ll.length())
 
-    # Enable this after implementing delete method
-    delete_implemented = False
-    if delete_implemented:
-        print('\nTesting delete:')
-        for item in ['B', 'C', 'A']:
-            print('delete({!r})'.format(item))
-            ll.delete(item)
-            print('list: {}'.format(ll))
+    # Testing delete method
+    print('\nTesting delete:')
+    for item in ['B', 'C', 'A']:
+        print(f'delete({item!r})')
+        ll.delete(item)
+        print('List:', ll)
 
-        print('head: {}'.format(ll.head))
-        print('tail: {}'.format(ll.tail))
-        print('length: {}'.format(ll.length()))
+    print('Head:', ll.head)
+    print('Tail:', ll.tail)
+    print('Length:', ll.length())
 
 
 if __name__ == '__main__':
