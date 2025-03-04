@@ -69,7 +69,7 @@ class LinkedList:
             new_node.next = self.head
             self.head = new_node
 
-    def find(self, matcher):
+    def search(self, matcher):
         """Return an item from this linked list if it is present.
 
         Now supports both functions and direct value lookup.
@@ -130,10 +130,10 @@ def test_linked_list():
     print('tail: {}'.format(ll.tail))
     print('length: {}'.format(ll.length()))
 
-    print('\nTesting find:')
-    print('Find "B":', ll.find("B"))  # Should return "B"
-    print('Find with lambda (x=="C"):', ll.find(lambda x: x == "C"))  # Should return "C"
-    print('Find "X" (not in list):', ll.find("X"))  # Should return None
+    print('\nTesting search:')
+    print('Search "B":', ll.search("B"))  # Should return "B"
+    print('Search with lambda (x=="C"):', ll.search(lambda x: x == "C"))  # Should return "C"
+    print('Search "X" (not in list):', ll.search("X"))  # Should return None
 
     print('\nTesting delete:')
     for item in ['B', 'C', 'A']:
