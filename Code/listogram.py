@@ -9,9 +9,11 @@ class Listogram(list):
 
     def __init__(self, word_list=None):
         """Initialize this histogram as a new list and count given words."""
-        super(Listogram, self).__init__()  # Initialize as a new list
-        self.types = 0  # Count of distinct word types
-        self.tokens = 0  # Total count of all word tokens
+        super(Listogram, self).__init__()  # Initialize this as a new list
+        # Add properties to track useful word counts for this histogram
+        self.types = 0  # Count of distinct word types in this histogram
+        self.tokens = 0  # Total count of all word tokens in this histogram
+        # Count words in given list, if any
         if word_list is not None:
             for word in word_list:
                 self.add_count(word)
@@ -21,15 +23,16 @@ class Listogram(list):
         found = False
         for i, (existing_word, freq) in enumerate(self): 
             if existing_word == word: 
-                self[i] = [existing_word, freq + count]  # Store as list instead of tuple
+                self[i] = (existing_word, freq + count)  
                 found = True
                 break
         
         if not found: 
-            self.append([word, count])  # Store new words as lists
+            self.append((word, count))  
             self.types += 1 
 
         self.tokens += count
+
 
     def frequency(self, word):
         """Return frequency count of given word, or 0 if word is not found."""
@@ -57,7 +60,7 @@ class Listogram(list):
         """Return a word from this histogram, randomly sampled by weighting
         each word's probability of being chosen by its observed frequency."""
         if self.tokens == 0:
-            return None  # Handle empty histogram case
+            return None
         
         random_index = random.randint(1, self.tokens)
 

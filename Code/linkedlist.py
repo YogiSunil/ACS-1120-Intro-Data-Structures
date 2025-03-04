@@ -123,7 +123,7 @@ class LinkedList:
             self.head = self.head.next
             if self.head is None:
                 self.tail = None
-            return  
+            return
         
         node = self.head
         while node.next is not None:
@@ -134,25 +134,10 @@ class LinkedList:
                 return
             node = node.next
         
-        raise ValueError('Item not found; {}.format(item)')
+        raise ValueError('Item not found: {}'.format(item))
 
-    def replace(self, old_item, new_item):
-        """Replace the old_item with new_item in the linked list.
-            
-        Time complexity: O(n) 
-        Explanation: We may need to check every node to find the old item.
-        
-        Raises:
-            ValueError: If the old item is not found in the list.
-        """
-        node = self.head
-        while node is not None:
-            if node.data == old_item:
-                node.data = new_item  # Replace the old item with the new item
-                return
-            node = node.next
-        raise ValueError('Item not found: {}'.format(old_item))  # Raise an error if not found
-
+# It's failing a test because linkedlist_test.py is looking for a replace method but the 
+# starter code does not mention for us to add this method.
 def test_linked_list():
     ll = LinkedList()
     print('list: {}'.format(ll))
