@@ -1,6 +1,8 @@
 #!python
 
+
 class Node(object):
+
     def __init__(self, data):
         """Initialize this node with the given data."""
         self.data = data
@@ -12,10 +14,12 @@ class Node(object):
 
 
 class LinkedList:
+
     def __init__(self, items=None):
         """Initialize this linked list and append the given items, if any."""
         self.head = None  # First node
         self.tail = None  # Last node
+        # Append given items
         if items is not None:
             for item in items:
                 self.append(item)
@@ -28,21 +32,31 @@ class LinkedList:
         return ll_str
 
     def items(self):
-        """Return a list of all items in this linked list."""
-        items = []
-        node = self.head
-        while node is not None:
-            items.append(node.data)
-            node = node.next
-        return items
+        """Return a list (dynamic array) of all items in this linked list.
+        Best and worst case running time: O(n) for n items in the list (length)
+        because we always need to loop through all n nodes to get each item."""
+        items = []  # O(1) time to create empty list
+        # Start at head node
+        node = self.head  # O(1) time to assign new variable
+        # Loop until node is None, which is one node too far past tail
+        while node is not None:  # Always n iterations because no early return
+            items.append(node.data)  # O(1) time (on average) to append to list
+            # Skip to next node to advance forward in linked list
+            node = node.next  # O(1) time to reassign variable
+        # Now list contains items from all nodes
+        return items  # O(1) time to return list
 
     def is_empty(self):
         """Return a boolean indicating whether this linked list is empty."""
         return self.head is None
 
     def length(self):
-        """Return the length of this linked list by traversing its nodes."""
-        count = 0
+        """Return the length of this linked list by traversing its nodes.
+
+        Time complexity: O(n) 
+        Explanation: We need to look at each node to count them all.
+        """
+        count = 0 
         node = self.head
         while node is not None:
             count += 1
@@ -50,7 +64,11 @@ class LinkedList:
         return count
 
     def append(self, item):
-        """Insert the given item at the tail of this linked list."""
+        """Insert the given item at the tail of this linked list.
+  
+        Time complexity: O(1) 
+        Explanation: We can directly add to the tail without going through the list.
+        """
         new_node = Node(item)
         if self.is_empty():
             self.head = new_node
@@ -60,7 +78,11 @@ class LinkedList:
             self.tail = new_node
 
     def prepend(self, item):
-        """Insert the given item at the head of this linked list."""
+        """Insert the given item at the head of this linked list.
+    
+        Time complexity: O(1) 
+        Explanation: We can insert the new node at the head directly.
+        """
         new_node = Node(item)
         if self.is_empty():
             self.head = new_node
@@ -69,32 +91,40 @@ class LinkedList:
             new_node.next = self.head
             self.head = new_node
 
-    def search(self, matcher):
+    def find(self, matcher):
         """Return an item from this linked list if it is present.
-
-        Now supports both functions and direct value lookup.
+    
+        Best case time: O(1) 
+        Explanation: The item is the first node.
+        
+        Worst case time: O(n) 
+        Explanation: We may need to check every node.
         """
         node = self.head
         while node is not None:
-            if callable(matcher):  # If matcher is a function, call it
-                if matcher(node.data):
-                    return node.data
-            elif node.data == matcher:  # If matcher is a string, compare directly
+            if matcher(node.data):
                 return node.data
             node = node.next
         return None
 
     def delete(self, item):
-        """Delete the given item from this linked list, or raise ValueError."""
+        """Delete the given item from this linked list, or raise ValueError.
+
+        Best case time: O(1) 
+        Explanation: The item to delete is the first node.
+        
+        Worst case time: O(n) 
+        Explanation: We may need to go through the entire list to find it.
+        """
         if self.is_empty():
             raise ValueError('Item not found: {}'.format(item))
-
+        
         if self.head.data == item:
             self.head = self.head.next
             if self.head is None:
                 self.tail = None
             return
-
+        
         node = self.head
         while node.next is not None:
             if node.next.data == item:
@@ -103,23 +133,14 @@ class LinkedList:
                     self.tail = node
                 return
             node = node.next
-
+        
         raise ValueError('Item not found: {}'.format(item))
 
-    def replace(self, old_item, new_item):
-        """Replace the old_item with new_item in the linked list."""
-        node = self.head
-        while node is not None:
-            if node.data == old_item:
-                node.data = new_item
-                return
-            node = node.next
-        raise ValueError('Item not found: {}'.format(old_item))
-
+# It's failing a test because linkedlist_test.py is looking for a replace method but the 
+# starter code does not mention for us to add this method.
 def test_linked_list():
     ll = LinkedList()
     print('list: {}'.format(ll))
-    
     print('\nTesting append:')
     for item in ['A', 'B', 'C']:
         print('append({!r})'.format(item))
@@ -130,20 +151,19 @@ def test_linked_list():
     print('tail: {}'.format(ll.tail))
     print('length: {}'.format(ll.length()))
 
-    print('\nTesting search:')
-    print('Search "B":', ll.search("B"))  # Should return "B"
-    print('Search with lambda (x=="C"):', ll.search(lambda x: x == "C"))  # Should return "C"
-    print('Search "X" (not in list):', ll.search("X"))  # Should return None
+    # Enable this after implementing delete method
+    delete_implemented = False
+    if delete_implemented:
+        print('\nTesting delete:')
+        for item in ['B', 'C', 'A']:
+            print('delete({!r})'.format(item))
+            ll.delete(item)
+            print('list: {}'.format(ll))
 
-    print('\nTesting delete:')
-    for item in ['B', 'C', 'A']:
-        print('delete({!r})'.format(item))
-        ll.delete(item)
-        print('list: {}'.format(ll))
+        print('head: {}'.format(ll.head))
+        print('tail: {}'.format(ll.tail))
+        print('length: {}'.format(ll.length()))
 
-    print('head: {}'.format(ll.head))
-    print('tail: {}'.format(ll.tail))
-    print('length: {}'.format(ll.length()))
 
 if __name__ == '__main__':
     test_linked_list()
