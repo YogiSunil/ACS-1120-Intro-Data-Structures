@@ -1,8 +1,5 @@
-#!python
-
 from __future__ import division, print_function  # Python 2 and 3 compatibility
 import random
-
 
 class Listogram(list):
     """Listogram is a histogram implemented as a subclass of the list type."""
@@ -32,7 +29,6 @@ class Listogram(list):
             self.types += 1 
 
         self.tokens += count
-
 
     def frequency(self, word):
         """Return frequency count of given word, or 0 if word is not found."""
@@ -70,6 +66,10 @@ class Listogram(list):
             if cumulative_count >= random_index:
                 return word
 
+    def entries(self):
+        """Return a list of (word, count) tuples from the histogram."""
+        return list(self)  # Return list of tuples (word, count)
+
 def print_histogram(word_list):
     print()
     print('Histogram:')
@@ -83,7 +83,6 @@ def print_histogram(word_list):
         print('{!r} occurs {} times'.format(word, freq))
     print()
     print_histogram_samples(histogram)
-
 
 def print_histogram_samples(histogram):
     print('Histogram samples:')
@@ -120,7 +119,6 @@ def print_histogram_samples(histogram):
     print(divider)
     print()
 
-
 def main():
     import sys
     arguments = sys.argv[1:]  # Exclude script name in first argument
@@ -138,7 +136,6 @@ def main():
         woodchuck_text = ('how much wood would a wood chuck chuck'
                           ' if a wood chuck could chuck wood')
         print_histogram(woodchuck_text.split())
-
 
 if __name__ == '__main__':
     main()

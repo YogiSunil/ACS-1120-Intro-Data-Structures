@@ -1,8 +1,4 @@
-#!python
-
-
 class Node(object):
-
     def __init__(self, data):
         """Initialize this node with the given data."""
         self.data = data
@@ -14,7 +10,6 @@ class Node(object):
 
 
 class LinkedList:
-
     def __init__(self, items=None):
         """Initialize this linked list and append the given items, if any."""
         self.head = None  # First node
@@ -136,8 +131,17 @@ class LinkedList:
         
         raise ValueError('Item not found: {}'.format(item))
 
-# It's failing a test because linkedlist_test.py is looking for a replace method but the 
-# starter code does not mention for us to add this method.
+    def replace(self, old_item, new_item):
+        """Replace the first occurrence of old_item with new_item."""
+        node = self.head
+        while node is not None:
+            if node.data == old_item:
+                node.data = new_item  # Replace the data of the node
+                return  # Exit once the item is replaced
+            node = node.next
+        raise ValueError(f'Item not found: {old_item}')
+
+
 def test_linked_list():
     ll = LinkedList()
     print('list: {}'.format(ll))
@@ -151,11 +155,20 @@ def test_linked_list():
     print('tail: {}'.format(ll.tail))
     print('length: {}'.format(ll.length()))
 
+    # Testing replace
+    print('\nTesting replace:')
+    ll.replace('B', 'Z')
+    print('list after replace: {}'.format(ll))
+
+    print('head: {}'.format(ll.head))
+    print('tail: {}'.format(ll.tail))
+    print('length: {}'.format(ll.length()))
+
     # Enable this after implementing delete method
-    delete_implemented = False
+    delete_implemented = True
     if delete_implemented:
         print('\nTesting delete:')
-        for item in ['B', 'C', 'A']:
+        for item in ['Z', 'C', 'A']:
             print('delete({!r})'.format(item))
             ll.delete(item)
             print('list: {}'.format(ll))
